@@ -20,7 +20,7 @@ const createUser = async (req, res) => {
     } = req.body;
 
     // Vérifie que le rôle est valide
-    if (!['employe', 'etudiant', 'supplier'].includes(role)) {
+    if (!['employe', 'etudiant', 'supplier','admin'].includes(role)) {
       return res.status(400).json({ message: 'Role invalide.' });
     }
 
@@ -196,7 +196,7 @@ const login = async (req, res) => {
     // Verify password
     const isMatch = await bcrypt.compare(motDePasse, user.motDePasse);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
+      return res.status(401).json({ message: ' mot de passe incorrect.' });
     }
 
     // Generate token

@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   statut: { type: String, enum: ['actif', 'inactif', 'suspendu'], default: 'actif' },
   role: {
     type: String,
-    enum: ['employe', 'etudiant', 'supplier'],
+    enum: ['employe', 'etudiant', 'supplier','admin'],
     required: true
   },
 
