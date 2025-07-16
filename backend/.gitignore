@@ -1,2 +1,14 @@
 node_modules/
 .env
+
+- git add .
+- git commit -m "Initial commit: Backend Express + MongoDB setup"
+- git remote add origin "url de projet git"
+- git branch -M main
+- git push -u origin main
+
+
+
+
+git rm -r --cached node_modules
+git commit -m "Remove node_modules from Git tracking"
