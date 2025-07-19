@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const amendeSchema = mongoose.Schema({
+const amendeSchema = new mongoose.Schema({
   montant: {
     type: Number,
     required: true
   },
   datePaiement: {
     type: Date,
-    default: Date.now
+    default: null // ممكن ما يكونش مدفوع وقت الإنشاء
   },
   motif: {
     type: String,
@@ -23,12 +23,13 @@ const amendeSchema = mongoose.Schema({
     ref: 'Pret',
     required: true
   },
-  dateCreationAmende:{
+  dateCreationAmende: {
     type: Date,
+    default: Date.now
   },
   status: {
     type: String,
-    enum: ['payée', 'impayée', 'annulée'],
+    enum: ['payée', 'impayée', 'annulée', 'en attente'],
     default: 'en attente'
   }
 }, {
