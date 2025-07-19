@@ -1,26 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const ligneCommandeController = require('../controllers/LigneCommandeFournisseurController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const roleMiddleware = require('../middlewares/roleMiddleware');
+const { auth, authorize } = require('../middlewares/auth');  // تأكد من المسار الصحيح
 
-// Seuls les employés peuvent gérer les lignes de commande
-router.use(authMiddleware);
-router.use(roleMiddleware(['bibliothecaire', 'administrateur']));
+// فقط الموظفون والإداريون يمكنهم إدارة خطوط الأوامر
+router.use(auth);
+router.use(authorize(['employe', 'admin']));
 
-// Créer une nouvelle ligne de commande
+// إنشاء خط أمر جديد
 router.post('/', ligneCommandeController.createLigneCommande);
 
-// Récupérer toutes les lignes d'une commande
+// استرجاع كل خطوط أمر معينة
 router.get('/commande/:idCommande', ligneCommandeController.getLignesByCommande);
 
-// Mettre à jour une ligne de commande
+// تحديث خط أمر
 router.put('/:id', ligneCommandeController.updateLigneCommande);
 
-// Supprimer une ligne de commande
+// حذف خط أمر
 router.delete('/:id', ligneCommandeController.deleteLigneCommande);
 
-// Calculer le total d'une commande
+// حساب مجموع قيمة الأمر
 router.get('/commande/:idCommande/total', ligneCommandeController.calculerTotalCommande);
 
 module.exports = router;
