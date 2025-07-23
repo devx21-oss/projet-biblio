@@ -1,6 +1,5 @@
 const LigneCommandeFournisseur = require('../models/LigneCommandeFournisseur');
 const CommandeFournisseur = require('../models/CommandeFournisseur');
-const Livre = require('../models/Livre');
 
 // Créer une nouvelle ligne de commande fournisseur
 exports.createLigneCommande = async (req, res) => {
@@ -56,7 +55,7 @@ exports.updateLigneCommande = async (req, res) => {
     const ligne = await LigneCommandeFournisseur.findByIdAndUpdate(
       id,
       { quantite, prixUnitaire },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!ligne) {

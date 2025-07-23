@@ -22,7 +22,9 @@ const createAmende = async (req, res) => {
 
 const getAllAmendes = async (req, res) => {
   try {
-    const amendes = await Amende.find().populate(['etudiantId', 'pretId']);
+    const amendes = await Amende.find()
+      .populate('etudiantId')
+      .populate('pretId');
     res.json(amendes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -31,7 +33,9 @@ const getAllAmendes = async (req, res) => {
 
 const getAmendeById = async (req, res) => {
   try {
-    const amende = await Amende.findById(req.params.id).populate(['etudiantId', 'pretId']);
+    const amende = await Amende.findById(req.params.id)
+      .populate('etudiantId')
+      .populate('pretId');
     if (!amende) return res.status(404).json({ message: 'Amende non trouvée.' });
     res.json(amende);
   } catch (error) {

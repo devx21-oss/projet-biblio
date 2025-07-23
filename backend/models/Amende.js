@@ -7,7 +7,7 @@ const amendeSchema = new mongoose.Schema({
   },
   datePaiement: {
     type: Date,
-    default: null // ممكن ما يكونش مدفوع وقت الإنشاء
+    default: null // null si non payée
   },
   motif: {
     type: String,
@@ -15,7 +15,7 @@ const amendeSchema = new mongoose.Schema({
   },
   etudiantId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Etudiant',
+    ref: 'User',  // هنا يجب أن تكون نفس اسم الموديل المستخدم
     required: true
   },
   pretId: {

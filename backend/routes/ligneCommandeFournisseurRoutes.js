@@ -1,25 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const ligneCommandeController = require('../controllers/LigneCommandeFournisseurController');
-const { auth, authorize } = require('../middlewares/auth');  // تأكد من المسار الصحيح
+const ligneCommandeController = require('../controllers/ligneCommendeFourniseurController.js');
+const { auth, authorize } = require('../middlewares/auth');
 
-// فقط الموظفون والإداريون يمكنهم إدارة خطوط الأوامر
-router.use(auth);
-router.use(authorize(['employe', 'admin']));
+router.post('/', auth, authorize(['employe', 'admin']), ligneCommandeController.createLigneCommande);
 
-// إنشاء خط أمر جديد
-router.post('/', ligneCommandeController.createLigneCommande);
+router.get('/commande/:idCommande', auth, authorize(['employe', 'admin']), ligneCommandeController.getLignesByCommande);
 
-// استرجاع كل خطوط أمر معينة
-router.get('/commande/:idCommande', ligneCommandeController.getLignesByCommande);
+router.put('/:id', auth, authorize(['employe', 'admin']), ligneCommandeController.updateLigneCommande);
 
-// تحديث خط أمر
-router.put('/:id', ligneCommandeController.updateLigneCommande);
+router.delete('/:id', auth, authorize(['admin']), ligneCommandeController.deleteLigneCommande);
 
-// حذف خط أمر
-router.delete('/:id', ligneCommandeController.deleteLigneCommande);
-
-// حساب مجموع قيمة الأمر
-router.get('/commande/:idCommande/total', ligneCommandeController.calculerTotalCommande);
+router.get('/commande/:idCommande/total', auth, authorize(['employe', 'admin']), ligneCommandeController.calculerTotalCommande);
 
 module.exports = router;

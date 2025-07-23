@@ -9,12 +9,10 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ message: messages.join(', ') });
   }
 
-  // خطأ مفتاح مكرر في MongoDB (مثل تكرار إيميل)
   if (err.code === 11000) {
     return res.status(400).json({ message: 'Une entrée avec ces données existe déjà.' });
   }
 
-  // أخطاء JWT
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({ message: 'Token invalide.' });
   }
@@ -23,7 +21,6 @@ const errorHandler = (err, req, res, next) => {
     return res.status(401).json({ message: 'Token expiré.' });
   }
 
-  // أي خطأ آخر غير معروف
   res.status(500).json({
     message: 'Erreur serveur',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined

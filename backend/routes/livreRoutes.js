@@ -3,12 +3,11 @@ const router = express.Router();
 const livreController = require('../controllers/livreController');
 const { auth, authorize } = require('../middlewares/auth');
 
-router.get('/', livreController.getAllLivres); // مفتوح للجميع
-router.get('/:id', livreController.getLivreById); // مفتوح للجميع
+router.get('/', livreController.getAllLivres); 
+router.get('/:id', livreController.getLivreById);
 
-// الحماية فقط للي عندهم دور 'employe'
-router.post('/', auth, authorize('employe'), livreController.createLivre);
-router.put('/:id', auth, authorize('employe'), livreController.updateLivre);
-router.delete('/:id', auth, authorize('employe'), livreController.deleteLivre);
+router.post('/', auth, authorize(['employe', 'admin']), livreController.createLivre);
+router.put('/:id', auth, authorize(['employe', 'admin']), livreController.updateLivre);
+router.delete('/:id', auth, authorize(['employe', 'admin']), livreController.deleteLivre);
 
 module.exports = router;
