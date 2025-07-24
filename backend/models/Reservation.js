@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const reservationSchema = new mongoose.Schema(
   {
@@ -9,7 +9,7 @@ const reservationSchema = new mongoose.Schema(
     },
     exemplaire: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Copy",
+      ref: "Exemplaire", // تأكد أن اسم الموديل هذا موجود فعلاً
       required: true,
     },
     dateReservation: {
@@ -18,7 +18,6 @@ const reservationSchema = new mongoose.Schema(
     },
     dateExpiration: {
       type: Date,
-      required: true,
     },
     statutReservation: {
       type: String,
@@ -32,15 +31,15 @@ const reservationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-)
+  }
+);
 
-// Set expiration date automatically (7 days from reservation)
+// Définir automatiquement la date d'expiration (7 jours après)
 reservationSchema.pre("save", function (next) {
   if (this.isNew && !this.dateExpiration) {
-    this.dateExpiration = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    this.dateExpiration = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
-  next()
-})
+  next();
+});
 
-module.exports = mongoose.model("Reservation", reservationSchema)
+module.exports = mongoose.model("Reservation", reservationSchema);

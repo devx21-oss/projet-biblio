@@ -1,4 +1,3 @@
-// models/Livre.js
 const mongoose = require('mongoose');
 
 const livreSchema = new mongoose.Schema({
@@ -19,10 +18,10 @@ const livreSchema = new mongoose.Schema({
   anneePublication: Number,
   langue: String,
   description: String,
-  imageCouverture: String, // URL ou chemin vers l'image
+  imageCouverture: String,
   categorie: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Categorie' // FK vers le modèle Categorie
+    ref: 'Categorie'
   },
   exemplaires: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -30,4 +29,5 @@ const livreSchema = new mongoose.Schema({
   }]
 }, { timestamps: true });
 
-module.exports = mongoose.model('Livre', livreSchema);
+// Prevent OverwriteModelError
+module.exports = mongoose.models.Livre || mongoose.model('Livre', livreSchema);

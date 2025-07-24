@@ -21,6 +21,8 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const exemplaireRoutes = require('./routes/exemplaireRoutes');
 const pretRoutes = require('./routes/pretRoutes'); 
 const ligneCommandeRoutes = require('./routes/ligneCommandeFournisseurRoutes.js');
+const reservationRoutes = require('./routes/reservationRoutes.js'); // ✅ nouveau
+
 // Middleware d'erreur
 const errorHandler = require('./middlewares/errorHandler');
 
@@ -37,6 +39,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/exemplaires', exemplaireRoutes);
 app.use('/api/prets', pretRoutes); // ✅ nouveau
 app.use('/api/lignes-commandes', ligneCommandeRoutes); // ✅ nouveau
+app.use('/api/reservations', reservationRoutes); // ✅ nouveau
+
 
 // Middleware global pour la gestion des erreurs
 app.use(errorHandler);

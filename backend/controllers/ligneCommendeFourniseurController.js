@@ -1,5 +1,6 @@
 const LigneCommandeFournisseur = require('../models/LigneCommandeFournisseur');
 const CommandeFournisseur = require('../models/CommandeFournisseur');
+const Livre = require('../models/Livre'); // نسيت استيراد موديل Livre
 
 // Créer une nouvelle ligne de commande fournisseur
 exports.createLigneCommande = async (req, res) => {

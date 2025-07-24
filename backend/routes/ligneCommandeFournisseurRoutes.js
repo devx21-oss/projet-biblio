@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const ligneCommandeController = require('../controllers/ligneCommendeFourniseurController.js');
 const { auth, authorize } = require('../middlewares/auth');
-
 router.post('/', auth, authorize(['employe', 'admin']), ligneCommandeController.createLigneCommande);
 
 router.get('/commande/:idCommande', auth, authorize(['employe', 'admin']), ligneCommandeController.getLignesByCommande);

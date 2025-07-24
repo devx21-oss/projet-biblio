@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 
 const pretSchema = new mongoose.Schema(
   {
-    utilisateur: {
+    etudiant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     exemplaire: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Copy",
+      ref: "Exemplaire", // صححت الاسم من "Copy" إلى "Exemplaire"
       required: true,
     },
     employe: {
@@ -39,7 +39,7 @@ const pretSchema = new mongoose.Schema(
   }
 );
 
-// Définir dateRetourPrevue automatiquement si non fournie
+// تعيين تاريخ الإرجاع المتوقع تلقائيا لو ما قدمش في الحفظ
 pretSchema.pre("save", function (next) {
   if (this.isNew && !this.dateRetourPrevue) {
     this.dateRetourPrevue = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);

@@ -1,8 +1,13 @@
 const Reservation = require('../models/Reservation');
 
+// إنشاء حجز
 async function createReservation(req, res) {
   try {
-    const reservation = new Reservation(req.body);
+    const reservation = new Reservation({
+      utilisateur: req.user._id,
+      exemplaire: req.body.exemplaire,
+    });
+
     await reservation.save();
     res.status(201).json(reservation);
   } catch (error) {
@@ -21,48 +26,9 @@ async function getAllReservations(req, res) {
   }
 }
 
-async function getReservationById(req, res) {
+async function getMyReservations(req, res) {
   try {
-    const reservation = await Reservation.findById(req.params.id)
-      .populate('utilisateur', 'nom prenom')
-      .populate('exemplaire');
-    if (!reservation) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json(reservation);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function updateReservation(req, res) {
-  try {
-    const reservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!reservation) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json(reservation);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-}
-
-async function deleteReservation(req, res) {
-  try {
-    const reservation = await Reservation.findByIdAndDelete(req.params.id);
-    if (!reservation) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json({ message: 'Réservation supprimée' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function getUserReservations(req, res) {
-  try {
-    const { userId } = req.params;
-    const reservations = await Reservation.find({ utilisateur: userId })
+    const reservations = await Reservation.find({ utilisateur: req.user._id })
       .populate('utilisateur', 'nom prenom')
       .populate('exemplaire');
     res.json(reservations);
@@ -71,11 +37,38 @@ async function getUserReservations(req, res) {
   }
 }
 
+async function confirmerReservation(req, res) {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
+    if (!reservation) return res.status(404).json({ message: 'Réservation non trouvée' });
+
+    reservation.statutReservation = 'confirmée';
+    await reservation.save();
+
+    res.json(reservation);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function annulerReservation(req, res) {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
+    if (!reservation) return res.status(404).json({ message: 'Réservation non trouvée' });
+
+    reservation.statutReservation = 'annulée';
+    await reservation.save();
+
+    res.json({ message: 'Réservation annulée' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 module.exports = {
   createReservation,
   getAllReservations,
-  getReservationById,
-  updateReservation,
-  deleteReservation,
-  getUserReservations,
+  getMyReservations,
+  confirmerReservation,
+  annulerReservation,
 };

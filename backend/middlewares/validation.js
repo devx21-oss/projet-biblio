@@ -12,7 +12,7 @@ const validateLoan = (req, res, next) => {
     return res.status(400).json({ message: 'ID de l\'étudiant requis.' });
   }
   
-  // Optional validation for dates
+  // تحقق من صحة التواريخ إن وجدت
   if (dateEmprunt && isNaN(new Date(dateEmprunt).getTime())) {
     return res.status(400).json({ message: 'Format de date d\'emprunt invalide.' });
   }
@@ -24,16 +24,22 @@ const validateLoan = (req, res, next) => {
   next();
 };
 
+
 // Validate reservation creation
 const validateReservation = (req, res, next) => {
   const { exemplaire } = req.body;
-  
+
   if (!exemplaire) {
-    return res.status(400).json({ message: 'ID de l\'exemplaire requis.' });
+    return res.status(400).json({ message: "L'ID de l'exemplaire est requis." });
   }
-  
+
   next();
 };
+
+module.exports = {
+  validateReservation
+};
+
 
 // Validate user creation/update
 // Update the validateUser function to include admin role

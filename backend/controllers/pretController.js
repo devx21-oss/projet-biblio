@@ -50,16 +50,15 @@ async function extendPret(req, res) {
 async function getUserPrets(req, res) {
   try {
     const userId = req.params.userId || req.user.id; // لو ما مررنا userId نأخذ من التوكن
-    const prets = await Pret.find({ utilisateur: userId })
-      .populate("utilisateur", "nom prenom")
-      .populate("exemplaire")
+    const prets = await Pret.find({ etudiant: userId })  // عدلنا من utilisateur إلى etudiant
+      .populate("etudiant", "nom prenom")                // عدلنا
+      .populate("exemplaire")                            // صححنا
       .populate("employe", "nom prenom");
     res.json(prets);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
-
 
 async function getOverduePrets(req, res) {
   try {
@@ -68,7 +67,7 @@ async function getOverduePrets(req, res) {
       statutPret: "en cours",
       dateRetourPrevue: { $lt: now },
     })
-      .populate("utilisateur", "nom prenom")
+      .populate("etudiant", "nom prenom")                // عدلنا
       .populate("exemplaire")
       .populate("employe", "nom prenom");
 
