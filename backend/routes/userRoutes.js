@@ -9,7 +9,9 @@ router.post('/login', userController.login);
 
 // Routes protégées, accessibles admins
 router.post('/', auth, authorize('admin'), userController.createUser);
-router.get('/', auth, authorize('admin'), userController.getAllUsers);
+//router.get('/', auth, authorize('admin'), userController.getAllUsers);
+router.get('/', auth, authorize(['admin', 'supplier']), userController.getUsersByRole);
+
 router.put('/:id', auth, authorize('admin'), userController.updateUser);
 router.delete('/:id', auth, authorize('admin'), userController.deleteUser);
 router.get('/:id', auth, authorize('admin'), userController.getUserById);

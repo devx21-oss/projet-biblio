@@ -10,4 +10,5 @@ router.post('/', auth, authorize(['employe', 'admin']), livreController.createLi
 router.put('/:id', auth, authorize(['employe', 'admin']), livreController.updateLivre);
 router.delete('/:id', auth, authorize(['employe', 'admin']), livreController.deleteLivre);
 
+
 module.exports = router;

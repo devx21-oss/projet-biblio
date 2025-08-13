@@ -49,7 +49,7 @@ async function extendPret(req, res) {
 
 async function getUserPrets(req, res) {
   try {
-    const userId = req.params.userId || req.user.id; // لو ما مررنا userId نأخذ من التوكن
+    const userId = req.params.userId || req.user._id;// لو ما مررنا userId نأخذ من التوكن
     const prets = await Pret.find({ etudiant: userId })  // عدلنا من utilisateur إلى etudiant
       .populate("etudiant", "nom prenom")                // عدلنا
       .populate("exemplaire")                            // صححنا

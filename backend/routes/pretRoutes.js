@@ -13,13 +13,13 @@ const { validateLoan } = require("../middlewares/validation");
 const router = express.Router();
 
 // Créer un prêt - uniquement employé
-router.post("/", auth, authorize("employe"), validateLoan, createPret);
+router.post("/", auth, authorize(['employe', 'admin']), validateLoan, createPret);
 
 // Retourner un prêt - uniquement employé
-router.put("/:id/return", auth, authorize("employe"), returnPret);
+router.put("/:id/return", auth, authorize(['employe', 'admin']), returnPret);
 
 // Prolonger un prêt - uniquement employé
-router.put("/:id/extend", auth, authorize("employe"), extendPret);
+router.put("/:id/extend", auth, authorize(['employe', 'admin']), extendPret);
 
 // Obtenir les prêts d'un utilisateur connecté (sans paramètre)
 router.get("/user", auth, getUserPrets);
@@ -28,6 +28,6 @@ router.get("/user", auth, getUserPrets);
 router.get("/user/:userId", auth, getUserPrets);
 
 // Obtenir les prêts en retard - uniquement employé
-router.get("/overdue", auth, authorize("employe"), getOverduePrets);
+router.get("/overdue", auth, authorize(['employe', 'admin']), getOverduePrets);
 
 module.exports = router;

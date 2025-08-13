@@ -4,7 +4,12 @@ const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role },
+    {
+      id: user._id,
+      role: user.role,
+      nom: user.nom || '',
+      prenom: user.prenom || ''
+    },
     process.env.JWT_SECRET,
     { expiresIn: '30d' }
   );
@@ -23,7 +28,7 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: 'Le mot de passe est obligatoire.' });
     }
 
-    if (!['employe', 'etudiant', 'supplier','admin'].includes(role)) {
+    if (!['employe', 'etudiant', 'supplier', 'admin'].includes(role)) {
       return res.status(400).json({ message: 'Role invalide.' });
     }
 
@@ -52,7 +57,7 @@ const createUser = async (req, res) => {
     res.status(201).json({
       message: 'Utilisateur créé avec succès.',
       user: userResponse,
-      token: token
+      token
     });
 
   } catch (error) {
@@ -115,7 +120,6 @@ const updateUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const deleteUser = async (req, res) => {
   try {
@@ -194,6 +198,26 @@ const getUserById = async (req, res) => {
   }
 };
 
+const getUsersByRole = async (req, res) => {
+  try {
+    let users;
+
+    if (req.user.role === 'admin') {
+      // admin يشوف الكل
+      users = await User.find();
+    } else if (req.user.role === 'supplier') {
+      // supplier يشوف كان suppliers
+      users = await User.find({ role: 'supplier' });
+    } else {
+      return res.status(403).json({ message: 'غير مسموح لك' });
+    }
+
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err });
+  }
+};
+
 module.exports = {
   createUser,
   register,
@@ -201,5 +225,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUsersByRole
 };

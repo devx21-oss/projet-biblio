@@ -31,12 +31,13 @@ const notificationSchema = new mongoose.Schema(
     },
     typeEntite: {
       type: String,
-      enum: ["Loan", "Reservation", "Fine"],
+      enum: ["Pret", "Reservation", "Amende"], // ✅ هنا التعديل حسب أسماء الموديلات
     },
   },
   {
     timestamps: true,
   },
-)
+);
+
 
 module.exports = mongoose.model("Notification", notificationSchema)

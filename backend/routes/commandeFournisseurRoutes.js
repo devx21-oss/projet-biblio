@@ -3,23 +3,10 @@ const router = express.Router();
 const commandeController = require('../controllers/commandeFournisseurController');
 const { auth, authorize } = require('../middlewares/auth'); // Corrige le chemin si besoin
 
-// Protection des routes selon les rôles :
-// - Création, modification, suppression : uniquement fournisseur ou admin
-// - Lecture de toutes les commandes : uniquement admin (à adapter selon tes besoins)
-
-// Créer une commande (fournisseur uniquement)
-router.post('/createCommande', auth, authorize(['supplier']), commandeController.createCommande);
-
-// Récupérer toutes les commandes (admin uniquement)
-router.get('/getAllCommandes', auth, authorize(['admin']), commandeController.getAllCommandes);
-
-// Récupérer une commande par ID (admin et fournisseur)
+router.post('/', auth, authorize(['admin', 'supplier']), commandeController.createCommande);
+router.get('/', auth, authorize(['admin', 'supplier']), commandeController.getAllCommandes);
 router.get('/:id', auth, authorize(['admin', 'supplier']), commandeController.getCommandeById);
-
-// Mettre à jour une commande (fournisseur uniquement)
-router.put('/:id', auth, authorize(['supplier']), commandeController.updateCommande);
-
-// Supprimer une commande (admin uniquement)
+router.put('/:id', auth, authorize(['admin', 'supplier']), commandeController.updateCommande);
 router.delete('/:id', auth, authorize(['admin']), commandeController.deleteCommande);
 
 module.exports = router;
