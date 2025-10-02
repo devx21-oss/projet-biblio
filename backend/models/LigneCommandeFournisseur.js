@@ -21,9 +21,7 @@ const ligneCommandeFournisseurSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-}, {
-  timestamps: true,
-});
+}, { timestamps: true });
 
 // Méthode pour calculer le sous-total
 ligneCommandeFournisseurSchema.methods.calculerSousTotal = function() {

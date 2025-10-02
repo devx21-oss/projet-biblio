@@ -15,7 +15,7 @@ const amendeSchema = new mongoose.Schema({
   },
   etudiantId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',  // هنا يجب أن تكون نفس اسم الموديل المستخدم
+    ref: 'User',  // اسم الموديل المستخدم
     required: true
   },
   pretId: {
@@ -30,7 +30,7 @@ const amendeSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['payée', 'impayée', 'annulée', 'en attente'],
-    default: 'en attente'
+    default: 'impayée' //統一致
   }
 }, {
   timestamps: true

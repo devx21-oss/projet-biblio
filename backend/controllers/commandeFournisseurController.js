@@ -1,4 +1,3 @@
-// controllers/commandeFournisseurController.js
 const CommandeFournisseur = require('../models/CommandeFournisseur');
 
 const createCommande = async (req, res) => {
@@ -70,4 +69,4 @@ module.exports = {
   getCommandeById,
   updateCommande,
   deleteCommande
-};
+};                                                                                                                              

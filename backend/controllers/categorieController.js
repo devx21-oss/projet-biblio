@@ -20,8 +20,11 @@ const createCategorie = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Categorie.find();
-    res.json(categories);
+    const { page = 1, limit = 5 } = req.query;
+    const skip = (page - 1) * limit;
+    const categories = await Categorie.find().skip(parseInt(skip)).limit(parseInt(limit));
+    const total = await Categorie.countDocuments();
+    res.json({ categories, total });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
