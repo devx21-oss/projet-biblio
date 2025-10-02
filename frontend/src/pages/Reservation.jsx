@@ -40,11 +40,7 @@ export default function GestionReservations() {
   const handleCancel = async (id) => {
     try {
       await api.delete(`/reservations/${id}`);
-      setReservations((prev) =>
-        prev.map((r) =>
-          r._id === id ? { ...r, statutReservation: "annulée" } : r
-        )
-      );
+      setReservations((prev) => prev.filter((r) => r._id !== id));
       toast.success("Réservation annulée !");
     } catch {
       toast.error("Erreur lors de l'annulation");
@@ -54,62 +50,78 @@ export default function GestionReservations() {
   if (loading) return <p className="text-center mt-6">Chargement...</p>;
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4">
       <h2 className="text-2xl font-bold mb-6">Gestion des Réservations</h2>
       {reservations.length === 0 ? (
-        <p>Aucune réservation trouvée.</p>
+        <p className="text-gray-600">Toutes les réservations sont traitées ✅</p>
       ) : (
-        <table className="w-full border border-gray-300 rounded-lg overflow-hidden shadow">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3 text-left">Livre</th>
-              <th className="p-3 text-left">Utilisateur</th>
-              <th className="p-3 text-left">Statut</th>
-              <th className="p-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservations.map((resv) => (
-              <tr key={resv._id} className="border-t">
-                <td className="p-3">{resv.exemplaire?.livre?.titre || "N/A"}</td>
-                <td className="p-3">
-                  {resv.utilisateur?.nom} {resv.utilisateur?.prenom}
-                </td>
-                <td className="p-3">
-                  <span
-                    className={`px-3 py-1 rounded-full text-white text-sm ${
-                      resv.statutReservation === "en attente"
-                        ? "bg-yellow-500"
-                        : resv.statutReservation === "confirmée"
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                    }`}
-                  >
-                    {resv.statutReservation}
-                  </span>
-                </td>
-                <td className="p-3 flex gap-2">
-                  {resv.statutReservation === "en attente" && (
-                    <>
-                      <button
-                        onClick={() => handleConfirm(resv._id)}
-                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full"
-                      >
-                        <FaCheck />
-                      </button>
-                      <button
-                        onClick={() => handleCancel(resv._id)}
-                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
-                      >
-                        <FaTimes />
-                      </button>
-                    </>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border border-gray-300 rounded-lg overflow-hidden shadow">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-3 text-left">Livre</th>
+                <th className="p-3 text-left">Utilisateur</th>
+                <th className="p-3 text-left">Email</th>
+                <th className="p-3 text-left">Date</th>
+                <th className="p-3 text-left">Statut</th>
+                <th className="p-3 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {reservations.map((resv) => (
+                <tr key={resv._id} className="border-t">
+                  <td className="p-3">
+                    {resv.exemplaire?.livre?.titre || "N/A"}
+                  </td>
+                  <td className="p-3">
+                    {resv.utilisateur?.nom} {resv.utilisateur?.prenom}
+                  </td>
+                  <td className="p-3 text-gray-600">
+                    {resv.utilisateur?.email || "—"}
+                  </td>
+                  <td className="p-3 text-gray-600">
+                    {resv.dateReservation
+                      ? new Date(resv.dateReservation).toLocaleDateString()
+                      : "—"}
+                  </td>
+                  <td className="p-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-white text-sm ${
+                        resv.statutReservation === "en attente"
+                          ? "bg-yellow-500"
+                          : resv.statutReservation === "confirmée"
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {resv.statutReservation}
+                    </span>
+                  </td>
+                  <td className="p-3 flex gap-2">
+                    {resv.statutReservation === "en attente" && (
+                      <>
+                        <button
+                          title="Confirmer"
+                          onClick={() => handleConfirm(resv._id)}
+                          className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full"
+                        >
+                          <FaCheck />
+                        </button>
+                        <button
+                          title="Annuler"
+                          onClick={() => handleCancel(resv._id)}
+                          className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
+                        >
+                          <FaTimes />
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

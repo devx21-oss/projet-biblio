@@ -1,27 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; 
 import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
+import { jwtDecode } from 'jwt-decode';
 
 export default function Layout({ children }) {
-  // نتحكم في التبويب النشط داخل الـ Layout
-  const [activeTab, setActiveTab] = useState("Utilisateurs");
+  const [activeTab, setActiveTab] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [role, setRole] = useState(null);
 
-  // الدالة لتغيير التبويب
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setRole(decoded.role);
+      } catch (err) {
+        console.error("Invalid token", err);
+        setRole(null);
+      }
+    }
+  }, []);
+
   const handleChangeTab = (tabName) => {
     setActiveTab(tabName);
+    setSidebarOpen(false);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* الشريط الجانبي */}
-      <Sidebar activeTab={activeTab} onChangeTab={handleChangeTab} />
+      <Sidebar
+        activeTab={activeTab}
+        onChangeTab={handleChangeTab}
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+        role={role}
+      />
 
-      {/* المحتوى الرئيسي */}
-      <main className="flex-grow p-6 overflow-auto">
-        {/* تقدر هنا تتحكم بعرض محتوى حسب activeTab */}
-        {/* لو حبيت، يمكن تستخدم React Router بدلاً من هذا */}
-        <h1 className="text-3xl font-bold mb-6">{activeTab}</h1>
-        {children /* محتوى الصفحة يوضع هنا */}
-      </main>
+      <div className="flex flex-col flex-grow transition-all duration-300 md:ml-64">
+        <Navbar setIsOpen={setSidebarOpen} />
+        <main className="flex-grow p-6 overflow-auto">
+          {activeTab && <h1 className="hidden md:block text-3xl font-bold mb-6">{activeTab}</h1>}
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

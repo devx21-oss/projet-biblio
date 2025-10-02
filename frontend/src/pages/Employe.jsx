@@ -1,155 +1,60 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import {
-  FaBook, FaShoppingCart, FaMoneyBillWave, FaTags,
-  FaCopy, FaClock, FaCalendarCheck, FaBell, FaSignOutAlt
-} from "react-icons/fa";
+import React from "react";
+import { useLocation } from "react-router-dom";
 
-// --- Composants de chaque onglet ---
+// 👇 كل Component خاص بتبويب
 function Livres() {
-  return (
-    <table className="min-w-full border">
-      <thead className="bg-gray-200">
-        <tr>
-          <th className="border p-2">Titre</th>
-          <th className="border p-2">Auteur</th>
-          <th className="border p-2">ISBN</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className="border p-2">Le Petit Prince</td>
-          <td className="border p-2">Antoine de Saint-Exupéry</td>
-          <td className="border p-2">123456789</td>
-        </tr>
-        <tr>
-          <td className="border p-2">1984</td>
-          <td className="border p-2">George Orwell</td>
-          <td className="border p-2">987654321</td>
-        </tr>
-      </tbody>
-    </table>
-  );
+  return <div>📚 Liste des livres</div>;
 }
-
 function Commandes() {
-  return (
-    <div className="grid grid-cols-2 gap-4">
-      <div className="p-4 bg-white shadow rounded">
-        <h3 className="font-bold">Commande #1</h3>
-        <p>3 livres achetés</p>
-      </div>
-      <div className="p-4 bg-white shadow rounded">
-        <h3 className="font-bold">Commande #2</h3>
-        <p>2 livres achetés</p>
-      </div>
-    </div>
-  );
+  return <div>🛒 Liste des commandes</div>;
 }
-
 function Amendes() {
-  return (
-    <ul className="list-disc pl-5">
-      <li>Retard livre "1984" - 5€</li>
-      <li>Retard livre "Le Petit Prince" - 2€</li>
-    </ul>
-  );
+  return <div>💰 Liste des amendes</div>;
 }
-
 function Categories() {
-  return (
-    <div className="flex gap-2 flex-wrap">
-      <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded">Science</span>
-      <span className="bg-green-100 text-green-800 px-3 py-1 rounded">Roman</span>
-      <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded">Histoire</span>
-    </div>
-  );
+  return <div>🏷️ Liste des catégories</div>;
 }
-
 function Exemplaires() {
-  return <div>Liste des exemplaires avec leur état.</div>;
+  return <div>📄 Liste des exemplaires</div>;
 }
-
 function Prets() {
-  return <div>Liste des prêts en cours.</div>;
+  return <div>⏳ Liste des prêts</div>;
 }
-
 function Reservations() {
-  return <div>Liste des réservations effectuées.</div>;
+  return <div>📅 Liste des réservations</div>;
+}
+function Notifications() {
+  return <div>🔔 Liste des notifications</div>;
 }
 
-function Notifications() {
-  return <div>Vous avez 3 nouvelles notifications.</div>;
-}
+// 👇 tabs avec leurs paths
+const onglets = [
+  { name: "Livres", path: "livres", component: <Livres /> },
+  { name: "Commandes", path: "commandes", component: <Commandes /> },
+  { name: "Amendes", path: "amendes", component: <Amendes /> },
+  { name: "Categories", path: "categories", component: <Categories /> },
+  { name: "Exemplaires", path: "exemplaires", component: <Exemplaires /> },
+  { name: "Prets", path: "prets", component: <Prets /> },
+  { name: "Reservations", path: "reservations", component: <Reservations /> },
+  { name: "Notifications", path: "notifications", component: <Notifications /> },
+];
 
 export default function Employe() {
-  const { onglet } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  const onglets = [
-    { name: "livres", icon: <FaBook />, component: <Livres /> },
-    { name: "commandes", icon: <FaShoppingCart />, component: <Commandes /> },
-    { name: "amendes", icon: <FaMoneyBillWave />, component: <Amendes /> },
-    { name: "categories", icon: <FaTags />, component: <Categories /> },
-    { name: "exemplaires", icon: <FaCopy />, component: <Exemplaires /> },
-    { name: "prets", icon: <FaClock />, component: <Prets /> },
-    { name: "reservations", icon: <FaCalendarCheck />, component: <Reservations /> },
-    { name: "notifications", icon: <FaBell />, component: <Notifications /> },
-  ];
+  // 🟢 نجيبو آخر جزء من path (ex: /employe/livres → "livres")
+  const currentPath = location.pathname.split("/").pop();
 
-  useEffect(() => {
-    if (!onglet || !onglets.some(tab => tab.name === onglet.toLowerCase())) {
-      navigate(`/employe/${onglets[0].name}`, { replace: true });
-    }
-  }, [onglet, navigate]);
-
-  const ongletSelectionne = onglets.find(tab => tab.name === onglet?.toLowerCase()) || onglets[0];
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  // 🔎 نلقاو التبويب المناسب
+  const ongletSelectionne =
+    onglets.find((t) => t.path === currentPath) || onglets[0];
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md p-4 flex flex-col">
-        <h2 className="text-xl font-bold mb-6 text-indigo-600">📚 Espace Employé</h2>
-        <nav className="flex flex-col gap-2">
-          {onglets.map(({ name, icon }) => (
-            <button
-              key={name}
-              className={`flex items-center gap-3 px-3 py-2 rounded transition-colors ${
-                ongletSelectionne.name === name
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-indigo-100"
-              }`}
-              onClick={() => navigate(`/employe/${name}`)}
-            >
-              {icon}
-              <span className="capitalize">{name}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 w-full"
-          >
-            <FaSignOutAlt />
-            Déconnexion
-          </button>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-4 capitalize">{ongletSelectionne.name}</h1>
-        <div className="bg-white shadow rounded p-4 min-h-[300px]">
-          {ongletSelectionne.component}
-        </div>
-      </main>
+    <div className="p-4">
+      {/* العنوان متغير حسب التبويب */}
+      <h2 className="text-2xl font-bold mb-4">{ongletSelectionne.name}</h2>
+      {/* نعرض الكومبونون */}
+      {ongletSelectionne.component}
     </div>
   );
 }

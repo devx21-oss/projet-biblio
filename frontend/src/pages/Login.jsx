@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from '../api/axios';
-import { jwtDecode } from 'jwt-decode';
-
+import { api } from "../api/axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,7 +26,8 @@ export default function Login() {
       newErrors.motDePasse = "Veuillez entrer votre mot de passe.";
       valid = false;
     } else if (motDePasse.length < 6) {
-      newErrors.motDePasse = "Le mot de passe doit contenir au moins 6 caractères.";
+      newErrors.motDePasse =
+        "Le mot de passe doit contenir au moins 6 caractères.";
       valid = false;
     }
 
@@ -35,45 +35,52 @@ export default function Login() {
     return valid;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setGeneralError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setGeneralError("");
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const res = await api.post("/users/login", { email, motDePasse });
-    const token = res.data.token;
-    localStorage.setItem("token", token);
+    try {
+      const res = await api.post("/users/login", { email, motDePasse });
 
-    const decoded = jwtDecode(token);
-    console.log("Utilisateur connecté :", decoded);
+      // ✅ Store token and user in localStorage
+      const token = res.data.token;
+      const user = res.data.user || {}; // ensure fallback
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
-    switch (decoded.role) {
-      case "admin":
-        navigate("/admin");
-        break;
-      case "etudiant":
-        navigate("/accueil"); 
-        break;
-      case "employe":
-        navigate("/employe");
-        break;
-      case "supplier":
-        navigate("/forunisseur"); 
-        break;
-      default:
-        navigate("/");
+      // ✅ Decode JWT
+      const decoded = jwtDecode(token);
+      console.log("Utilisateur connecté :", decoded, user);
+
+      // ✅ Navigate by role (both backend "user" and JWT token should have role)
+      const role = decoded.role || user.role;
+      switch (role) {
+        case "admin":
+          navigate("/admin");
+          break;
+        case "etudiant":
+          navigate("/accueil");
+          break;
+        case "employe":
+          navigate("/employe");
+          break;
+        case "supplier":
+          navigate("/fournisseur"); // typo fixed ✅
+          break;
+        default:
+          navigate("/");
+      }
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setGeneralError("Email ou mot de passe incorrect.");
+      } else {
+        setGeneralError("Erreur lors de la connexion. Veuillez réessayer.");
+        console.error(err);
+      }
     }
-  } catch (err) {
-    if (err.response?.status === 401) {
-      setGeneralError("Email ou mot de passe incorrect.");
-    } else {
-      setGeneralError("Erreur lors de la connexion. Veuillez réessayer.");
-      console.error(err);
-    }
-  }
-};
+  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-900 overflow-hidden">
